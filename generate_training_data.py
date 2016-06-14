@@ -21,12 +21,15 @@ def generate_training_data(filename):
     else:
         raise "Incompatible WAV File"
 
-def windowed_DFT(samples):
-	num_windows = int(ceil(1. * samples.size / WINDOW_SIZE))
+def windowed_DFT(data):
+	num_windows = int(ceil(1. * data.size / WINDOW_SIZE))
 	dft_array = np.empty((num_windows, WINDOW_SIZE))
 
 	for i in range(num_windows):
-		window = samples[i * WINDOW_SIZE: (i+1) * WINDOW_SIZE]
+		window = data[i * WINDOW_SIZE: (i+1) * WINDOW_SIZE]
+		if (window.size < WINDOW_SIZE):
+			window = np.copy(window)
+			window.resize(WINDOW_SIZE)
 		frequencies = dct(window, type=2, norm='ortho')
 		dft_array[i] = frequencies
 
